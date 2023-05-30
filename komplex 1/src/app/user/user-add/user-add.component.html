@@ -1,1 +1,39 @@
-<p>user-add works!</p>
+<div>
+    <div class="submit-form">
+      <div *ngIf="!submitted"><!-- Megjelenítés, ha 'submitted' változó értéke false -->
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input
+            type="text"
+            class="form-control"
+            id="title"
+            required
+            [(ngModel)]="user.nev" 
+            name="title"
+          /><!-- Adatkötés a 'user.title' adatmodellhez -->
+        </div>
+  
+        <div class="form-group">
+          <label for="description">Description</label>
+          <input
+            class="form-control"
+            id="description"
+            required
+            [(ngModel)]="user.szhely"
+            name="description"
+          />
+          <!-- Adatkötés a 'user.description' adatmodellhez -->
+        </div>
+  
+        <button (click)="saveuser()" class="btn btn-success">Submit</button> <!-- Kattintás eseménykezelése. Ha a gombra kattintanak, meghívódik a 'saveuser()' nevű metódus -->
+     
+      </div>
+  
+      <div *ngIf="submitted"><!-- Megjelenítés, ha 'submitted' változó értéke true -->
+        <h4>user was submitted successfully!</h4>
+        <button class="btn btn-success" (click)="newuser()">Add</button> <!-- Kattintás eseménykezelése. Ha a gombra kattintanak, meghívódik a 'newuser()' nevű metódus -->
+     
+      </div>
+    </div>
+  </div>
+  

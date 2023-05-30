@@ -1,5 +1,6 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { User } from 'src/app/models/user';
+import { ApiService } from 'src/app/service/api.service';
 
 @Component({
   selector: 'app-user-list',
@@ -8,15 +9,93 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UserListComponent implements OnInit {
   
-  displayedColumns: string[] = ['nev', 'kor', 'szhely', 'password', 'username','_id','__v'];
-  dataSource: any[] = [];
+  // A user objektumok tömbje
+  users?: User[];
 
-  constructor(private http: HttpClient) { }
+  // Az aktuális tutoriál, amelyet kiválasztottunk
+  currentUser: User = {
+    nev: '',
+    userName: '',
+    password: '',
+    kor: 0,
+    szhely: ''
+  };
+
+  // Az aktuális tutoriál indexe a tömbben
+  currentIndex = -1;
+
+  nev='';
+
+
+  constructor(private apiService: ApiService) { }
 
   ngOnInit(): void {
-   this.http.get<any[]>('http://127.0.0.1:3000/api/v1/users').subscribe({
-      next: (data: any[]) => this.dataSource = data,
-      error: (err) => console.log(err)
-    })
+    // Az ngOnInit() metódus futása a komponens inicializálásakor
+    // Az összes tutoriál lekérése
+    this.retrieveusers();
+  }
+
+  // Az összes tutoriál lekérése
+  retrieveusers(): void {
+    this.apiService.getAll()
+      .subscribe({
+        next: (data) => {
+          this.users = data;
+          console.log(data);
+        },
+        error: (e) => console.error(e)
+      });
+  }
+
+  // Lista frissítése
+  refreshList(): void {
+    this.retrieveusers();
+    this.currentUser = {
+      nev: '',
+      userName: '',
+      password: '',
+      kor: 0,
+      szhely: ''
+    };
+    this.currentIndex = -1;
+  }
+
+  // Kiválasztott tutoriál beállítása
+  setActiveuser(user: User, index: number): void {
+    this.currentUser = user;
+    this.currentIndex = index;
+  }
+
+  // Az összes tutoriál törlése
+  removeAllusers(): void {
+    this.apiService.deleteAll()
+      .subscribe({
+        next: (res) => {
+          console.log(res);
+          this.refreshList();
+        },
+        error: (e) => console.error(e)
+      });
+  }
+
+  // Cím alapján történő keresés
+  searchNev(): void {
+    this.currentUser = {
+      nev: '',
+      userName: '',
+      password: '',
+      kor: 0,
+      szhely: ''
+    };
+    this.currentIndex = -1;
+
+    this.apiService.findByNev(this.nev)
+      .subscribe({
+        next: (data) => {
+          this.users = data;
+          console.log(data);
+        },
+        error: (e) => console.error(e)
+      });
   }
 }

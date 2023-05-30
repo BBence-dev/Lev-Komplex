@@ -1,1 +1,98 @@
-<p>user-details works!</p>
+<div *ngIf="viewMode; else editable">
+    <div *ngIf="currentUser.id">
+      <h4>User</h4>
+      <div>
+        <label><strong>Title:</strong></label> {{ currentUser.nev }}
+      </div>
+      <div>
+        <label><strong>Description:</strong></label>
+        {{ currentUser.kor }}
+      </div>
+      <div>
+        <label><strong>Status:</strong></label>
+        {{ currentUser.szhely ? "Published" : "Pending" }}
+      </div>
+  
+      <a
+        class="badge badge-warning"
+        routerLink="/Users/{{ currentUser.id }}"
+      >
+        Edit
+      </a>
+    </div>
+  
+    <div *ngIf="!currentUser">
+      <br />
+      <p>Please click on a User...</p>
+    </div>
+  </div>
+  <!-- Az "editable" nevű ng-template az szerkeszthető részt tartalmazza.
+     Ha currentUser.id értéke igaz, 
+     akkor az adatok szerkeszthető formban jelennek meg egy űrlapon. -->
+  <ng-template #editable>
+    <div *ngIf="currentUser.id" class="edit-form">
+      <h4>User</h4>
+      <form>
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input
+            type="text"
+            class="form-control"
+            id="title"
+            [(ngModel)]="currentUser.nev"
+            name="title"
+          />
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <input
+            type="text"
+            class="form-control"
+            id="description"
+            [(ngModel)]="currentUser.kor"
+            name="description"
+          />
+        </div>
+  
+        <div class="form-group">
+          <label><strong>Status:</strong></label>
+          {{ currentUser.szhely ? "Published" : "Pending" }}
+        </div>
+      </form>
+  <!-- Gombok az adatok frissítéséhez, törléséhez és publikáláshoz/elrejtéshez. -->
+  
+     <!-- <button
+        class="badge badge-primary mr-2"
+        *ngIf="currentUser.szhely"
+        (click)="updatePublished(false)"
+      >
+        UnPublish
+      </button>
+      <button
+        *ngIf="!currentUser.szhely"
+        class="badge badge-primary mr-2"
+        (click)="updatePublished(true)"
+      >
+        Publish
+      </button>-->
+  
+      <button class="badge badge-danger mr-2" (click)="deleteUser()">
+        Delete
+      </button>
+  
+     <!-- <button
+        type="submit"
+        class="badge badge-success mb-2"
+        (click)="updateUser()"
+      >
+        Update
+      </button>
+      <p>{{ message }}</p>-->
+    </div>
+  
+    <div *ngIf="!currentUser.id">
+      <br />
+      <p>Cannot access this User...</p>
+    </div>
+  </ng-template>
+  
